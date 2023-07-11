@@ -33,7 +33,7 @@ jumpvm1_ip_config_name    = "Jumpvm1ipconfig"
 jumpvm1_os_disk_name      = "jumpvm01osdisk"
 vm1_computer_name         = "Jump-Host-vm-01"
 vm1_admin_username        = "verkor-admin"
-vm1secret_name            = "Jump-Host-vm-01"
+vm1secret_name            = "Jump-Host-01"
 
 ###################################################
 # Jump Host VM 02
