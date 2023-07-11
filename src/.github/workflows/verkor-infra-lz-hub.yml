@@ -1,4 +1,4 @@
-name: 'Azure-LZ-Hub'
+name: 'USN'
 
 on:
   workflow_dispatch:
