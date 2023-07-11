@@ -2,10 +2,10 @@
 
 terraform {
   backend "azurerm" {
-    resource_group_name  = "rg-tf-vrk-hub-frc"
-    storage_account_name = "sttfbackendvrkhubfrc"
-    container_name       = "hubtfstatefile"
-    key                  = "hub.terraform.tfstate"
+    resource_group_name  = "rg-tf-vrk-hub-frc1"
+    storage_account_name = "sttfbackendvrkhubfrc1"
+    container_name       = "hubtfstatefile1"
+    key                  = "hub.terraform1.tfstate"
   }
 }
 
