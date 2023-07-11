@@ -9,8 +9,8 @@ env:
   ARM_CLIENT_SECRET: ${{secrets.HUB_SP_CLIENT_SECRET}}
   ARM_SUBSCRIPTION_ID: ${{secrets.HUB_SUBSCRIPTION_ID}}
   ARM_TENANT_ID: ${{secrets.HUB_SP_TENANT_ID}}
-  ROOT_PATH: '${{ github.workspace }}/terraform/verkor-azure-infra-hub'
-  ENV_PATH: '${{ github.workspace }}/terraform/verkor-azure-infra-hub/environments/hub.tfvars'
+  ROOT_PATH: '${{ github.workspace }}/src/terraform'
+  ENV_PATH: '${{ github.workspace }}/src/terraform/environments/hub.tfvars'
 
 
 jobs:
