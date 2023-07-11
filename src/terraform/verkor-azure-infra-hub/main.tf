@@ -292,7 +292,7 @@ module "keyvault" {
   purge_protection_enabled        = var.purge_protection_enabled
   tags                            = merge({ "ResourceName" = format("%s", local.resource_names.keyvault_name) }, local.tags)
 
-  
+  depends_on          = [module.azurerm_rg_transit]
 }
 # This resources helps in creating Random Password for Key Secret for Jumphost VM1 
 resource "random_password" "jumpvm1" {
