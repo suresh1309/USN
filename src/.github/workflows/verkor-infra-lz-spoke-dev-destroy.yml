@@ -1,0 +1,45 @@
+name: 'Azure-LZ-Spoke-Dev-Destruction'
+
+on:
+  workflow_dispatch:
+     
+
+env:
+  ARM_CLIENT_ID: ${{secrets.DEV_SP_CLIENT_ID}}
+  ARM_CLIENT_SECRET: ${{secrets.DEV_SP_CLIENT_SECRET}}
+  ARM_SUBSCRIPTION_ID: ${{secrets.DEV_SUBSCRIPTION_ID}}
+  ARM_TENANT_ID: ${{secrets.DEV_SP_TENANT_ID}}
+  ROOT_PATH: '${{ github.workspace }}/terraform/verkor-azure-spoke-dev'
+  ENV_PATH: '${{ github.workspace }}/terraform/verkor-azure-spoke-dev/environments/dev.tfvars'
+
+
+jobs:
+  terraform_plan:
+    name: 'DEV/TEST ENVIRONMENT DESTRUCTION'
+    runs-on: ubuntu-latest
+   
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: GitHub Action Checkout
+      uses: actions/checkout@v2
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Terraform Configuration
+      uses: hashicorp/setup-terraform@v1
+      with:
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Installation #Initialize a working directory containing Terraform configuration files.
+      run: terraform init
+      working-directory: ${{env.ROOT_PATH}}
+   
+    # Generates an execution plan for Terraform
+    - name: Terraform Destruction
+      run: terraform destroy --auto-approve -var-file "${{env.ENV_PATH}}"
+      working-directory: ${{env.ROOT_PATH}}
