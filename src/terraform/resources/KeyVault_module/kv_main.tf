@@ -38,6 +38,7 @@ resource "azurerm_key_vault" "main" {
     key_permissions = [
       "Create",
       "Get",
+      "List"
     ]
 
     secret_permissions = [
