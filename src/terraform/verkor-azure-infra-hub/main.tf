@@ -254,26 +254,26 @@ module "azurerm_vnet_transit" {
 #   ]
 # }
 # This module helps in Diagnosis settings for VPN Public IP
-module "azure_diagnosticsettings_vpnpip" {
-  source              = "../resources/Diagnostic_Settings"
-  diag_name           = local.resource_names.vpnpip_diag_name
-  destination         = module.azure_loganalyticsworkspace.log_analytics_workspace_id
-  resource_group_name = module.azurerm_rg_transit.resource_group_name
-  target_ids          = [module.vpn_gateway_public_ip.id]
-  storage_account_id  = module.azurerm_log_storage_account.storage_account_id
-  logs = [
-    "DDoSProtectionNotifications",
-    "DDoSMitigationFlowLogs",
-    "DDoSMitigationReports"
-  ]
-  tags = merge({ "ResourceName" = format("%s", local.resource_names.vpnpip_diag_name) }, local.tags)
-  depends_on = [
-    module.azurerm_log_storage_account,
-    module.azure_loganalyticsworkspace,
-    module.azure_vpn_gateway,
-    module.vpn_gateway_public_ip
-  ]
-}
+# module "azure_diagnosticsettings_vpnpip" {
+#   source              = "../resources/Diagnostic_Settings"
+#   diag_name           = local.resource_names.vpnpip_diag_name
+#   destination         = module.azure_loganalyticsworkspace.log_analytics_workspace_id
+#   resource_group_name = module.azurerm_rg_transit.resource_group_name
+#   target_ids          = [module.vpn_gateway_public_ip.id]
+#   storage_account_id  = module.azurerm_log_storage_account.storage_account_id
+#   logs = [
+#     "DDoSProtectionNotifications",
+#     "DDoSMitigationFlowLogs",
+#     "DDoSMitigationReports"
+#   ]
+#   tags = merge({ "ResourceName" = format("%s", local.resource_names.vpnpip_diag_name) }, local.tags)
+#   depends_on = [
+#     module.azurerm_log_storage_account,
+#     module.azure_loganalyticsworkspace,
+#     module.azure_vpn_gateway,
+#     module.vpn_gateway_public_ip
+#   ]
+# }
 
 ###################################################
 # Key Vault provisioning
