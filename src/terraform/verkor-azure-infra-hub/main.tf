@@ -308,18 +308,18 @@ resource "azurerm_key_vault_secret" "jumpvm1" {
   depends_on   = [module.keyvault, random_password.jumpvm1]
 }
 # This resources helps in creating Random Password for Key Secret for Jumphost VM2 
-resource "random_password" "jumpvm2" {
-  length     = 20
-  special    = true
-  depends_on = [module.keyvault]
-}
+# resource "random_password" "jumpvm2" {
+#   length     = 20
+#   special    = true
+#   depends_on = [module.keyvault]
+# }
 # This resources helps in creating Keyvault Secret to Jumphost VM2 
-resource "azurerm_key_vault_secret" "jumpvm2" {
-  name         = var.vm2secret_name
-  value        = random_password.jumpvm2.result
-  key_vault_id = module.keyvault.id
-  depends_on   = [module.keyvault, random_password.jumpvm2]
- }
+# resource "azurerm_key_vault_secret" "jumpvm2" {
+#   name         = var.vm2secret_name
+#   value        = random_password.jumpvm2.result
+#   key_vault_id = module.keyvault.id
+#   depends_on   = [module.keyvault, random_password.jumpvm2]
+#  }
 # # This Module helps in creating Keyvault Policy to view the  Secrets
 # module "keyvault_policy" {
 #   source          = "../resources/Key_vault_multi_access_policy"
@@ -481,34 +481,34 @@ module "azurerm_jumpvm01" {
 # This module helps in creating Jump Host VM 02 in Transit Resource Group for Hub Environemnt
 # This Jump Host VM 02 helps in private remote connection with Spoke Environment. 
 
-module "azurerm_jumpvm02" {
-  source              = "../resources/AZ_Windows_VM"
-  nic_name            = local.resource_names.jumpvm2_nic_name
-  vm_name             = local.resource_names.jumpvm2_vm_name
-  resource_group_name = module.azurerm_rg_transit.resource_group_name
-  ip_config_name      = var.jumpvm2_ip_config_name
-  subnet_id           = module.azurerm_snet_jumpvm.subnet_id
-  vm_size             = var.vm_size
-  os_disk_name        = var.jumpvm2_os_disk_name
-  caching             = var.caching
-  create_option       = var.create_option
-  managed_disk_type   = var.managed_disk_type
-  i_offer             = var.i_offer
-  i_publisher         = var.i_publisher
-  i_sku               = var.i_sku
-  i_version           = var.i_version
-  computer_name       = var.vm2_computer_name
-  admin_username      = var.vm2_admin_username
-  admin_password      = azurerm_key_vault_secret.jumpvm2.value
-  tags                = merge({ "ResourceName" = format("%s", local.resource_names.jumpvm2_vm_name) }, local.tags)
+# module "azurerm_jumpvm02" {
+#   source              = "../resources/AZ_Windows_VM"
+#   nic_name            = local.resource_names.jumpvm2_nic_name
+#   vm_name             = local.resource_names.jumpvm2_vm_name
+#   resource_group_name = module.azurerm_rg_transit.resource_group_name
+#   ip_config_name      = var.jumpvm2_ip_config_name
+#   subnet_id           = module.azurerm_snet_jumpvm.subnet_id
+#   vm_size             = var.vm_size
+#   os_disk_name        = var.jumpvm2_os_disk_name
+#   caching             = var.caching
+#   create_option       = var.create_option
+#   managed_disk_type   = var.managed_disk_type
+#   i_offer             = var.i_offer
+#   i_publisher         = var.i_publisher
+#   i_sku               = var.i_sku
+#   i_version           = var.i_version
+#   computer_name       = var.vm2_computer_name
+#   admin_username      = var.vm2_admin_username
+#   admin_password      = azurerm_key_vault_secret.jumpvm2.value
+#   tags                = merge({ "ResourceName" = format("%s", local.resource_names.jumpvm2_vm_name) }, local.tags)
 
-  depends_on = [
-    azurerm_key_vault_secret.jumpvm2,
+#   depends_on = [
+#     azurerm_key_vault_secret.jumpvm2,
    
-    module.azurerm_snet_jumpvm,
-    module.azurerm_jumpvm01
-  ]
-}
+#     module.azurerm_snet_jumpvm,
+#     module.azurerm_jumpvm01
+#   ]
+# }
 
 # This module helps in creating Route Table in Transit Resource Group for Hub Environemnt
 # This Route Table helps user defined routing and by creating network routes so that firewall can handle inbound & Outbound traffic 
@@ -518,7 +518,7 @@ module "azurerm_route_table" {
   resource_group_name = module.azurerm_rg_transit.resource_group_name
   name                = local.resource_names.route_table_name
   tags                = merge({ "ResourceName" = format("%s", local.resource_names.route_table_name) }, local.tags)
-  depends_on          = [module.azurerm_jumpvm02]
+  depends_on          = [module.azurerm_rg_transit]
 }
 
 # This module helps in associating Route Table to Subnet
