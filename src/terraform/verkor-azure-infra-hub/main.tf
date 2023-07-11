@@ -117,89 +117,89 @@ module "azurerm_vnet_transit" {
 #This module creates Subnet in Transit Virtual Network for Hub Environment.
 #This subnet required to host Azure Firewall
 
-module "azurerm_snet_firewall" {
-  source               = "../resources/SubNet_module"
-  resource_group_name  = module.azurerm_rg_transit.resource_group_name
-  name                 = var.firewall_subnet_name
-  subnet_addressSpaces = var.snet_firewall_addressspaces
-  virtual_network_name = module.azurerm_vnet_transit.virtual_network_name
-  depends_on           = [module.azurerm_vnet_transit]
-}
+# module "azurerm_snet_firewall" {
+#   source               = "../resources/SubNet_module"
+#   resource_group_name  = module.azurerm_rg_transit.resource_group_name
+#   name                 = var.firewall_subnet_name
+#   subnet_addressSpaces = var.snet_firewall_addressspaces
+#   virtual_network_name = module.azurerm_vnet_transit.virtual_network_name
+#   depends_on           = [module.azurerm_vnet_transit]
+# }
 
 # This Module creates Public IP in Transit Resource Group for Hub Environment.
 # This IP is required to configure with VPN Gateway
 
-module "firewall_public_ip" {
-  source              = "../resources/PublicIP_module"
-  name                = local.resource_names.fw_pip_name
-  resource_group_name = module.azurerm_rg_transit.resource_group_name
-  sku                 = var.firewall_pip_sku
-  allocation_method   = var.firewall_pip_allocation_method
-  tags                = merge({ "ResourceName" = format("%s", local.resource_names.fw_pip_name) }, local.tags)
-  depends_on          = [module.azurerm_snet_firewall]
-}
+# module "firewall_public_ip" {
+#   source              = "../resources/PublicIP_module"
+#   name                = local.resource_names.fw_pip_name
+#   resource_group_name = module.azurerm_rg_transit.resource_group_name
+#   sku                 = var.firewall_pip_sku
+#   allocation_method   = var.firewall_pip_allocation_method
+#   tags                = merge({ "ResourceName" = format("%s", local.resource_names.fw_pip_name) }, local.tags)
+#   depends_on          = [module.azurerm_snet_firewall]
+# }
 
 # This module helps in creating Azure Firewall in Transit Resource Group for Hub Environment
 # This Azure Firewall in Hub Environment for Connectivity
 
-module "azure_firewall" {
-  source                = "../resources/Firewall_module"
-  firewall_name         = local.resource_names.firewall_name
-  location              = var.location
-  resource_group_name   = module.azurerm_rg_transit.resource_group_name
-  virtual_network_name  = module.azurerm_vnet_transit.virtual_network_name
-  subnet_firewall_id    = module.azurerm_snet_firewall.subnet_id
-  firewall_public_ip_id = module.firewall_public_ip.id
-  threat_intel_mode     = var.threat_intel_mode
-  firewall_web_rules    = var.firewall_web_rules
-  tags                  = merge({ "ResourceName" = format("%s", local.resource_names.firewall_name) }, local.tags)
-  depends_on            = [module.firewall_public_ip, module.azurerm_snet_firewall]
-}
+# module "azure_firewall" {
+#   source                = "../resources/Firewall_module"
+#   firewall_name         = local.resource_names.firewall_name
+#   location              = var.location
+#   resource_group_name   = module.azurerm_rg_transit.resource_group_name
+#   virtual_network_name  = module.azurerm_vnet_transit.virtual_network_name
+#   subnet_firewall_id    = module.azurerm_snet_firewall.subnet_id
+#   firewall_public_ip_id = module.firewall_public_ip.id
+#   threat_intel_mode     = var.threat_intel_mode
+#   firewall_web_rules    = var.firewall_web_rules
+#   tags                  = merge({ "ResourceName" = format("%s", local.resource_names.firewall_name) }, local.tags)
+#   depends_on            = [module.firewall_public_ip, module.azurerm_snet_firewall]
+# }
 
-# This module helps in Diagnosis settings for Firewall
-module "azure_diagnosticsettings_firewall" {
-  source              = "../resources/Diagnostic_Settings"
-  diag_name           = local.resource_names.fw_diag_name
-  resource_group_name = module.azurerm_rg_transit.resource_group_name
-  destination         = module.azure_loganalyticsworkspace.log_analytics_workspace_id
-  target_ids          = [module.azure_firewall.firewall_id]
-  storage_account_id  = module.azurerm_log_storage_account.storage_account_id
-  logs = [
-    "AzureFirewallApplicationRule",
-    "AzureFirewallNetworkRule",
-    "AzureFirewallDnsProxy"
-  ]
-  tags = merge({ "ResourceName" = format("%s", local.resource_names.fw_diag_name) }, local.tags)
-  depends_on = [
-    module.azurerm_log_storage_account,
-    module.azure_firewall,
-    module.azure_loganalyticsworkspace
-  ]
-}
-# This module helps in Diagnosis settings for Firewall Public Ip
-module "azure_diagnosticsettings_fwpips" {
-  source              = "../resources/Diagnostic_Settings"
-  diag_name           = local.resource_names.fwpip_diag_name
-  destination         = module.azure_loganalyticsworkspace.log_analytics_workspace_id
-  resource_group_name = module.azurerm_rg_transit.resource_group_name
-  target_ids          = [module.firewall_public_ip.id]
-  storage_account_id  = module.azurerm_log_storage_account.storage_account_id
-  logs = [
-    "DDoSProtectionNotifications",
-    "DDoSMitigationFlowLogs",
-    "DDoSMitigationReports"
-  ]
+# # This module helps in Diagnosis settings for Firewall
+# module "azure_diagnosticsettings_firewall" {
+#   source              = "../resources/Diagnostic_Settings"
+#   diag_name           = local.resource_names.fw_diag_name
+#   resource_group_name = module.azurerm_rg_transit.resource_group_name
+#   destination         = module.azure_loganalyticsworkspace.log_analytics_workspace_id
+#   target_ids          = [module.azure_firewall.firewall_id]
+#   storage_account_id  = module.azurerm_log_storage_account.storage_account_id
+#   logs = [
+#     "AzureFirewallApplicationRule",
+#     "AzureFirewallNetworkRule",
+#     "AzureFirewallDnsProxy"
+#   ]
+#   tags = merge({ "ResourceName" = format("%s", local.resource_names.fw_diag_name) }, local.tags)
+#   depends_on = [
+#     module.azurerm_log_storage_account,
+#     module.azure_firewall,
+#     module.azure_loganalyticsworkspace
+#   ]
+# # }
+# # This module helps in Diagnosis settings for Firewall Public Ip
+# module "azure_diagnosticsettings_fwpips" {
+#   source              = "../resources/Diagnostic_Settings"
+#   diag_name           = local.resource_names.fwpip_diag_name
+#   destination         = module.azure_loganalyticsworkspace.log_analytics_workspace_id
+#   resource_group_name = module.azurerm_rg_transit.resource_group_name
+#   target_ids          = [module.firewall_public_ip.id]
+#   storage_account_id  = module.azurerm_log_storage_account.storage_account_id
+#   logs = [
+#     "DDoSProtectionNotifications",
+#     "DDoSMitigationFlowLogs",
+#     "DDoSMitigationReports"
+#   ]
 
-  tags = merge({ "ResourceName" = format("%s", local.resource_names.fwpip_diag_name) }, local.tags)
-  depends_on = [
+#   tags = merge({ "ResourceName" = format("%s", local.resource_names.fwpip_diag_name) }, local.tags)
+#   depends_on = [
 
-    module.azurerm_log_storage_account,
-    module.firewall_public_ip,
-    module.azure_firewall,
-    module.azure_loganalyticsworkspace,
-    module.azure_diagnosticsettings_firewall
-  ]
-}
+#     module.azurerm_log_storage_account,
+#     module.firewall_public_ip,
+#     module.azure_firewall,
+#     module.azure_loganalyticsworkspace,
+#     module.azure_diagnosticsettings_firewall
+#   ]
+# }
 
 
 ###################################################
@@ -209,50 +209,50 @@ module "azure_diagnosticsettings_fwpips" {
 #This module creates Subnet in Transit Virtual Network for Hub Environment.
 #This subnet required to host VPN gateway
 
-module "azurerm_snet_vpn_gateway" {
-  source               = "../resources/SubNet_module"
-  resource_group_name  = module.azurerm_rg_transit.resource_group_name
-  name                 = "GatewaySubnet" #VPN gateway subnet name must be "GatewaySubnet"
-  subnet_addressSpaces = var.snet_vpn_gateway_addressspaces
-  virtual_network_name = module.azurerm_vnet_transit.virtual_network_name
-  depends_on = [
+# module "azurerm_snet_vpn_gateway" {
+#   source               = "../resources/SubNet_module"
+#   resource_group_name  = module.azurerm_rg_transit.resource_group_name
+#   name                 = "GatewaySubnet" #VPN gateway subnet name must be "GatewaySubnet"
+#   subnet_addressSpaces = var.snet_vpn_gateway_addressspaces
+#   virtual_network_name = module.azurerm_vnet_transit.virtual_network_name
+#   depends_on = [
 
-    module.azurerm_vnet_transit,
-    module.azure_firewall,
-    module.azure_diagnosticsettings_fwpips
-  ]
-}
+#     module.azurerm_vnet_transit,
+#     module.azure_firewall,
+#     module.azure_diagnosticsettings_fwpips
+#   ]
+# }
 
 # This Module creates Public IP in Transit Resource Group for Hub Environment
 # This IP is required to configure with VPN Gateway
 
-module "vpn_gateway_public_ip" {
-  source              = "../resources/PublicIP_module"
-  name                = local.resource_names.vpn_gw_pip_name
-  resource_group_name = module.azurerm_rg_transit.resource_group_name
-  sku                 = var.vpn_gateway_pip_sku
-  allocation_method   = var.vpn_gateway_pip_allocation_method
-  tags                = merge({ "ResourceName" = format("%s", local.resource_names.vpn_gw_pip_name) }, local.tags)
-  depends_on          = [module.azurerm_snet_vpn_gateway]
-}
+# module "vpn_gateway_public_ip" {
+#   source              = "../resources/PublicIP_module"
+#   name                = local.resource_names.vpn_gw_pip_name
+#   resource_group_name = module.azurerm_rg_transit.resource_group_name
+#   sku                 = var.vpn_gateway_pip_sku
+#   allocation_method   = var.vpn_gateway_pip_allocation_method
+#   tags                = merge({ "ResourceName" = format("%s", local.resource_names.vpn_gw_pip_name) }, local.tags)
+#   depends_on          = [module.azurerm_snet_vpn_gateway]
+# }
 
-#This module creates VPN Gateway in Transit Resource Group for Hub Environment.
-# VPN Gateway is for Secure connection for Spoke Environement.
+# #This module creates VPN Gateway in Transit Resource Group for Hub Environment.
+# # VPN Gateway is for Secure connection for Spoke Environement.
 
-module "azure_vpn_gateway" {
-  source                = "../resources/Virtual_Network_Gateway"
-  name                  = local.resource_names.vpn_gw_name
-  resource_group_name   = module.azurerm_rg_transit.resource_group_name
-  sku                   = var.vpn_gateway_sku
-  private_ip_allocation = var.vpn_gateway_private_IP_allocation
-  azurerm_subnet        = module.azurerm_snet_vpn_gateway.subnet_id
-  azurerm_public_ip     = module.vpn_gateway_public_ip.id
-  tags                  = merge({ "ResourceName" = format("%s", local.resource_names.vpn_gw_name) }, local.tags)
-  depends_on = [
-    module.azurerm_snet_vpn_gateway,
-    module.vpn_gateway_public_ip,
-  ]
-}
+# module "azure_vpn_gateway" {
+#   source                = "../resources/Virtual_Network_Gateway"
+#   name                  = local.resource_names.vpn_gw_name
+#   resource_group_name   = module.azurerm_rg_transit.resource_group_name
+#   sku                   = var.vpn_gateway_sku
+#   private_ip_allocation = var.vpn_gateway_private_IP_allocation
+#   azurerm_subnet        = module.azurerm_snet_vpn_gateway.subnet_id
+#   azurerm_public_ip     = module.vpn_gateway_public_ip.id
+#   tags                  = merge({ "ResourceName" = format("%s", local.resource_names.vpn_gw_name) }, local.tags)
+#   depends_on = [
+#     module.azurerm_snet_vpn_gateway,
+#     module.vpn_gateway_public_ip,
+#   ]
+# }
 # This module helps in Diagnosis settings for VPN Public IP
 module "azure_diagnosticsettings_vpnpip" {
   source              = "../resources/Diagnostic_Settings"
@@ -321,14 +321,14 @@ resource "azurerm_key_vault_secret" "jumpvm2" {
   value        = random_password.jumpvm2.result
   key_vault_id = module.keyvault.id
   depends_on   = [module.keyvault, random_password.jumpvm2]
-}
-# This Module helps in creating Keyvault Policy to view the  Secrets
-module "keyvault_policy" {
-  source          = "../resources/Key_vault_multi_access_policy"
-  key_vault_id    = module.keyvault.id
-  access_policies = var.access_policies
-  depends_on      = [module.keyvault.id]
-}
+ }
+# # This Module helps in creating Keyvault Policy to view the  Secrets
+# module "keyvault_policy" {
+#   source          = "../resources/Key_vault_multi_access_policy"
+#   key_vault_id    = module.keyvault.id
+#   access_policies = var.access_policies
+#   depends_on      = [module.keyvault.id]
+# }
 ###################################################
 # Jump Host VM'S resources provisioning
 ###################################################
@@ -345,7 +345,7 @@ module "azurerm_snet_jumpvm" {
   depends_on = [
     module.keyvault,
     module.azurerm_vnet_transit,
-    module.keyvault_policy
+    
   ]
 }
 
@@ -392,62 +392,62 @@ module "azurerm_nsg_jumpvm" {
 # This module helps in associating Subnet with Network Security Group.
 # This NSG and Subnet Association is required to restrict traffic to Jump Host VM's
 
-module "azurerm_nsg_jumpvm_assoc" {
-  source                    = "../resources/Subnet_NSG_association_module"
-  subnet_id                 = module.azurerm_snet_jumpvm.subnet_id
-  network_security_group_id = module.azurerm_nsg_jumpvm.network_security_group_id
-  depends_on                = [module.azurerm_nsg_jumpvm, module.azurerm_snet_jumpvm]
-}
+# module "azurerm_nsg_jumpvm_assoc" {
+#   source                    = "../resources/Subnet_NSG_association_module"
+#   subnet_id                 = module.azurerm_snet_jumpvm.subnet_id
+#   network_security_group_id = module.azurerm_nsg_jumpvm.network_security_group_id
+#   depends_on                = [module.azurerm_nsg_jumpvm, module.azurerm_snet_jumpvm]
+# }
 
-# This module helps in Diagnosis settings for Jump Vm NSG 
-resource "azurerm_monitor_diagnostic_setting" "jumpvmnnsg" {
-  name               = local.resource_names.jumpvmnnsg_diag_name
-  target_resource_id = module.azurerm_nsg_jumpvm.network_security_group_id
-  storage_account_id = module.azurerm_log_storage_account.storage_account_id
+# # This module helps in Diagnosis settings for Jump Vm NSG 
+# resource "azurerm_monitor_diagnostic_setting" "jumpvmnnsg" {
+#   name               = local.resource_names.jumpvmnnsg_diag_name
+#   target_resource_id = module.azurerm_nsg_jumpvm.network_security_group_id
+#   storage_account_id = module.azurerm_log_storage_account.storage_account_id
 
-  log {
-    category = "NetworkSecurityGroupEvent"
-    enabled  = true
+#   log {
+#     category = "NetworkSecurityGroupEvent"
+#     enabled  = true
 
-    retention_policy {
-      enabled = false
-    }
-  }
-  depends_on = [
-    module.azure_loganalyticsworkspace,
-    module.azurerm_log_storage_account,
-    module.azurerm_nsg_jumpvm_assoc
-  ]
-}
-# This module helps in creating NSG Flow Logs of Jump Vm NSG 
-resource "azurerm_network_watcher_flow_log" "nsgfl-jumpvm" {
-  network_watcher_name = "NetworkWatcher_francecentral"
-  resource_group_name  = "NetworkWatcherRG"
+#     retention_policy {
+#       enabled = false
+#     }
+#   }
+#   depends_on = [
+#     module.azure_loganalyticsworkspace,
+#     module.azurerm_log_storage_account,
+#     module.azurerm_nsg_jumpvm_assoc
+#   ]
+# }
+# # This module helps in creating NSG Flow Logs of Jump Vm NSG 
+# resource "azurerm_network_watcher_flow_log" "nsgfl-jumpvm" {
+#   network_watcher_name = "NetworkWatcher_francecentral"
+#   resource_group_name  = "NetworkWatcherRG"
 
-  network_security_group_id = module.azurerm_nsg_jumpvm.network_security_group_id
-  storage_account_id        = module.azurerm_log_storage_account.storage_account_id
-  enabled                   = true
-  version                   = 2
+#   network_security_group_id = module.azurerm_nsg_jumpvm.network_security_group_id
+#   storage_account_id        = module.azurerm_log_storage_account.storage_account_id
+#   enabled                   = true
+#   version                   = 2
 
-  retention_policy {
-    enabled = true
-    days    = 7
-  }
+#   retention_policy {
+#     enabled = true
+#     days    = 7
+#   }
 
-  traffic_analytics {
-    enabled               = true
-    workspace_id          = module.azure_loganalyticsworkspace.log_analytics_workspace_id
-    workspace_region      = var.location
-    workspace_resource_id = module.azure_loganalyticsworkspace.log_analytics_resource_id
-    interval_in_minutes   = 10
-  }
-  depends_on = [
-    module.azure_loganalyticsworkspace,
-    module.azurerm_nsg_jumpvm,
-    module.azurerm_log_storage_account,
-    azurerm_monitor_diagnostic_setting.jumpvmnnsg
-  ]
-}
+#   traffic_analytics {
+#     enabled               = true
+#     workspace_id          = module.azure_loganalyticsworkspace.log_analytics_workspace_id
+#     workspace_region      = var.location
+#     workspace_resource_id = module.azure_loganalyticsworkspace.log_analytics_resource_id
+#     interval_in_minutes   = 10
+#   }
+#   depends_on = [
+#     module.azure_loganalyticsworkspace,
+#     module.azurerm_nsg_jumpvm,
+#     module.azurerm_log_storage_account,
+#     azurerm_monitor_diagnostic_setting.jumpvmnnsg
+#   ]
+# }
 
 
 # This module helps in creating Jump Host VM 01 in Transit Resource Group for Hub Environemnt
@@ -475,7 +475,7 @@ module "azurerm_jumpvm01" {
   tags                = merge({ "ResourceName" = format("%s", local.resource_names.jumpvm1_vm_name) }, local.tags)
   depends_on = [
     azurerm_key_vault_secret.jumpvm1,
-    azurerm_network_watcher_flow_log.nsgfl-jumpvm,
+    
     module.azurerm_snet_jumpvm
   ]
 }
@@ -506,7 +506,7 @@ module "azurerm_jumpvm02" {
 
   depends_on = [
     azurerm_key_vault_secret.jumpvm2,
-    azurerm_network_watcher_flow_log.nsgfl-jumpvm,
+   
     module.azurerm_snet_jumpvm,
     module.azurerm_jumpvm01
   ]
@@ -525,29 +525,29 @@ module "azurerm_route_table" {
 
 # This module helps in associating Route Table to Subnet
 
-module "azurerm_snet_firewall_route_table_association" {
-  source         = "../resources/Subnet_route_table_association_module"
-  subnet_id      = module.azurerm_snet_firewall.subnet_id
-  route_table_id = module.azurerm_route_table.route_table_id
-  depends_on     = [module.azurerm_route_table, module.azurerm_snet_firewall]
-}
+# module "azurerm_snet_firewall_route_table_association" {
+#   source         = "../resources/Subnet_route_table_association_module"
+#   subnet_id      = module.azurerm_snet_firewall.subnet_id
+#   route_table_id = module.azurerm_route_table.route_table_id
+#   depends_on     = [module.azurerm_route_table, module.azurerm_snet_firewall]
+# }
 
 #This module helps in creating Private End Point in Jump Host Subnet.
 #This Private End Point helps in private connection to Storage Account
 
-module "azurerm_jumpvm_private_endpoint" {
-  source                           = "../resources/Private_Endpoint"
-  location                         = var.location
-  private_endpoint_name            = local.resource_names.jumpvm_private_endpoint_name
-  resource_group_name              = module.azurerm_rg_transit.resource_group_name
-  subnet_id                        = module.azurerm_snet_jumpvm.subnet_id
-  private_connection_name          = var.private_connection_name
-  private_link_enabled_resource_id = module.azurerm_log_storage_account.storage_account_id
-  subresource_names                = var.subresource_names
-  depends_on = [
-    module.azurerm_nsg_jumpvm,
-    module.azurerm_log_storage_account,
-    module.azurerm_route_table
-  ]
+# module "azurerm_jumpvm_private_endpoint" {
+#   source                           = "../resources/Private_Endpoint"
+#   location                         = var.location
+#   private_endpoint_name            = local.resource_names.jumpvm_private_endpoint_name
+#   resource_group_name              = module.azurerm_rg_transit.resource_group_name
+#   subnet_id                        = module.azurerm_snet_jumpvm.subnet_id
+#   private_connection_name          = var.private_connection_name
+#   private_link_enabled_resource_id = module.azurerm_log_storage_account.storage_account_id
+#   subresource_names                = var.subresource_names
+#   depends_on = [
+#     module.azurerm_nsg_jumpvm,
+#     module.azurerm_log_storage_account,
+#     module.azurerm_route_table
+#   ]
 
-}
+# }
