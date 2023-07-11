@@ -19,7 +19,7 @@ locals {
     log_rg_name                  = lower(join("-", ["rg", var.log_resource_group, var.applicationname_short, var.environment_short, var.region]))
     transit_rg_name              = lower(join("-", ["rg", var.resource_group, var.applicationname_short, var.environment_short, var.region]))
     transit_vnet_name            = lower(join("-", ["vnet", var.resource_group, var.applicationname_short, var.environment_short, var.region]))
-    log_storage_account_name     = lower(join("", ["st", "log1", var.applicationname_short, var.environment_short, var.region, "01"]))
+    log_storage_account_name     = lower(join("", ["st", "log2", var.applicationname_short, var.environment_short, var.region, "01"]))
     log_analytics_workspace_name = lower(join("-", ["log", "workspace", var.applicationname_short, var.environment_short, var.region]))
     fw_pip_name                  = lower(join("-", ["pip", "fw", var.applicationname_short, var.environment_short, var.region]))
     firewall_name                = lower(join("-", ["fw", "app", var.business_unit, "dev", var.region]))
