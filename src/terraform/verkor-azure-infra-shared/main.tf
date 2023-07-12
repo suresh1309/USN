@@ -5,7 +5,7 @@ terraform {
     resource_group_name  = "rg-tf-usn-shared-frc-33"
     storage_account_name = "sttfbackendusn3sharedfrc"
     container_name       = "usnterraformspn"
-    key                  = "usn.suresh.tfstate"
+    key                  = "hub.terraform1.tfstate"
   }
 }
 
