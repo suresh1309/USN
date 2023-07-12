@@ -17,7 +17,7 @@ create_rsvault      = "vrk-rsv"
 #############################################################################
 
 policy_file_share    = "fileshare-frc-usn-s-rsv"
-file_share_timezone  = "IST"
+file_share_timezone  = "UTC"
 file_share_time      = "22:30"
 file_share_retention = 60
 file_share_weekly    = 7
@@ -40,8 +40,9 @@ webhook-receiver-name     = "monitorreceivername"
 webhook-service-uri       = "http://example.com/alert"
 short_name                = "agsmsalert"
 sms-receiver-name         = "naresh"
-country-code              = "+91"
-phone-number              = "6281907735"
+country_code              = "1"
+phone_number = "1231231234"
+
 email-reciever-name       = "naresh"
 email-address             = "nareshsuresh.azure@gmail.com"
 monitor_metric_alert      = "metricalert-01"
