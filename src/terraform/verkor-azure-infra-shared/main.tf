@@ -5,7 +5,7 @@ terraform {
     resource_group_name  = "rg-tf-vrk-shared1-frc"
     storage_account_name = "sttfbackendvrksharedfrc1"
     container_name       = "sharedtfstatefile1"
-    key                  = "shared.terraform.tfstate"
+    key                  = "shared.terraform1.tfstate"
   }
 }
 

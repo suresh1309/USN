@@ -39,19 +39,19 @@ monitor_action_group_name = "monitoraction14"
 webhook-receiver-name     = "monitorreceivername"
 webhook-service-uri       = "http://example.com/alert"
 short_name                = "agsmsalert"
-sms-receiver-name         = "julien"
+sms-receiver-name         = "naresh"
 country-code              = "1"
 phone-number              = "1231231234"
-email-reciever-name       = "adrienrichard"
-email-address             = "adrien.richard@verkor.com"
+email-reciever-name       = "naresh"
+email-address             = "nareshsuresh.azure@gmail.com"
 monitor_metric_alert      = "metricalert-001"
 
 ##########################################
 #DNS
 ##########################################
-dns_zone_name     = "verkor.com"
+dns_zone_name     = "btg.com"
 create_zone       = "true"
-tag_dns_zone_name = "verkor"
+tag_dns_zone_name = "btg"
 /*
 ###################################################
 # AD Groups & Members
@@ -109,8 +109,8 @@ business_unit         = "Verkor"
 applicationname       = "Manufacturing Data Platform"
 applicationname_short = "vrk"
 data_classification   = "Confidential"
-approver_name         = "julien.darvey@verkor.com,adrien.richard@verkor.com"
+approver_name         = "nareshsuresh.azure@gmail.com"
 environment           = "shared"
 environment_short     = "services"
-owner_name            = "Julien Darvey, Adrien Richard"
-contact               = "julien.darvey@verkor.com,adrien.richard@verkor.com"
+owner_name            = "suresh"
+contact               = "nareshsuresh.azure@gmail.com"
