@@ -17,9 +17,9 @@ terraform {
 locals {
 
   resource_names = {
-    shared_rg_name      = lower(join("-", ["rg", "shared", var.applicationname_short, var.environment_short, var.region]))
-    shared_rsv_name     = lower(join("-", ["rsv", "app", var.applicationname_short, var.environment_short, var.region]))
-    shared_storage_name = lower(join("", ["st", "shared", var.applicationname_short, var.environment_short, var.region, "1"]))
+    shared_rg_name      = lower(join("-", ["rg", "usn", var.applicationname_short, var.environment_short, var.region]))
+    shared_rsv_name     = lower(join("-", ["rsv", "usn", var.applicationname_short, var.environment_short, var.region]))
+    shared_storage_name = lower(join("", ["st", "usn", var.applicationname_short, var.environment_short, var.region, "1"]))
   }
 
   tags = {
