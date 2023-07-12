@@ -2,9 +2,9 @@
 
 terraform {
   backend "azurerm" {
-    resource_group_name  = "rg-tf-vrk-shared-frc"
-    storage_account_name = "sttfbackendvrksharedfrc"
-    container_name       = "sharedtfstatefile"
+    resource_group_name  = "rg-tf-vrk-shared1-frc"
+    storage_account_name = "sttfbackendvrksharedfrc1"
+    container_name       = "sharedtfstatefile1"
     key                  = "shared.terraform.tfstate"
   }
 }
