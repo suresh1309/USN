@@ -4,7 +4,7 @@ terraform {
   backend "azurerm" {
     resource_group_name  = "rg-tf-usn-shared-frc-33"
     storage_account_name = "sttfbackendusn3sharedfrc"
-    container_name       = "usnterra12statefile"
+    container_name       = "usnterraformspn"
     key                  = "usn.terra.tfstate"
   }
 }
