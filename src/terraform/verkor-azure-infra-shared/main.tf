@@ -2,10 +2,10 @@
 
 terraform {
   backend "azurerm" {
-    resource_group_name  = "rg-tf-usn-shared"
-    storage_account_name = "sttfbackendusn3"
-    container_name       = "usnterraform"
-    key                  = "hub.usn.tfstate"
+    resource_group_name  = "rg-tf-shared"
+    storage_account_name = "sttfbackendusnverkor"
+    container_name       = "verkorcontainer"
+    key                  = "vk.usa.tfstate"
   }
 }
 
